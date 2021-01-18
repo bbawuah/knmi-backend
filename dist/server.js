@@ -48,7 +48,7 @@ var cors_1 = __importDefault(require("cors"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var PORT = process.env.PORT || 3000;
 var app = express_1.default();
-var origin = process.env.UI_SERVER_ORIGIN || 'https://project-knmi.netlify.app';
+var origin = 'http://localhost:8080' || 'https://project-knmi.netlify.app';
 var privateKey = {
     type: process.env.TYPE,
     project_id: process.env.PROJECT_ID,
@@ -61,7 +61,24 @@ var privateKey = {
     auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_X509_CERT_URL,
     client_x509_cert_url: process.env.CLIENT_X509_CERT_URL
 };
-app.use(cors_1.default({ origin: origin, credentials: true }));
+var allowedOrigins = [
+    'http://localhost:8080',
+    'https://project-knmi.netlify.app'
+];
+app.use(cors_1.default({
+    origin: function (origin, callback) {
+        // allow requests with no origin
+        // (like mobile apps or curl requests)
+        if (!origin)
+            return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            var msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    }
+}));
 app.use(express_1.default.json());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -69,6 +86,7 @@ app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.post('/mapId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var collection;
     return __generator(this, function (_a) {
+        console.log(req);
         try {
             collection = earthengine_1.default
                 .ImageCollection('COPERNICUS/S5P/NRTI/L3_NO2')

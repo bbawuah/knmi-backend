@@ -23,13 +23,34 @@ const privateKey = {
   client_x509_cert_url: process.env.CLIENT_X509_CERT_URL
 }
 
-app.use(cors({ origin, credentials: true }))
+const allowedOrigins = [
+  'http://localhost:8080',
+  'https://project-knmi.netlify.app'
+]
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin
+      // (like mobile apps or curl requests)
+      if (!origin) return callback(null, true)
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          'The CORS policy for this site does not ' +
+          'allow access from the specified Origin.'
+        return callback(new Error(msg), false)
+      }
+      return callback(null, true)
+    }
+  })
+)
+
 app.use(express.json())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // '2019-06-06'
 app.post('/mapId', async (req, res) => {
+  console.log(req)
   try {
     const collection = ee
       .ImageCollection('COPERNICUS/S5P/NRTI/L3_NO2')
