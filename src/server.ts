@@ -8,8 +8,7 @@ const PORT = process.env.PORT || 3000
 
 const app = express()
 
-const origin =
-  process.env.UI_SERVER_ORIGIN || 'https://project-knmi.netlify.app'
+const origin = 'http://localhost:8080' || 'https://project-knmi.netlify.app'
 
 const privateKey = {
   type: process.env.TYPE,
