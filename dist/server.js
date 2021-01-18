@@ -38,23 +38,35 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 var dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 var earthengine_1 = __importDefault(require("@google/earthengine"));
 var express_1 = __importDefault(require("express"));
-var private_key_json_1 = __importDefault(require("./private-key.json"));
 var cors_1 = __importDefault(require("cors"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var PORT = process.env.PORT || 3000;
 var app = express_1.default();
-var origin = process.env.UI_SERVER_ORIGIN || 'http://localhost:8080';
+var origin = process.env.UI_SERVER_ORIGIN || 'https://project-knmi.netlify.app';
+var privateKey = {
+    type: process.env.TYPE,
+    project_id: process.env.PROJECT_ID,
+    private_key_id: process.env.PRIVATE_KEY_ID,
+    private_key: (_a = process.env.PRIVATE_KEY) === null || _a === void 0 ? void 0 : _a.replace(new RegExp('\\\\n', 'g'), '\n'),
+    client_email: process.env.CLIENT_EMAIL,
+    client_id: process.env.CLIENT_ID,
+    auth_uri: process.env.AUTH_URI,
+    oken_uri: process.env.TOKEN_URI,
+    auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_X509_CERT_URL,
+    client_x509_cert_url: process.env.CLIENT_X509_CERT_URL
+};
 app.use(cors_1.default({ origin: origin, credentials: true }));
 app.use(express_1.default.json());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 // '2019-06-06'
-app.post('/map', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+app.post('/mapId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var collection;
     return __generator(this, function (_a) {
         try {
@@ -78,7 +90,8 @@ app.post('/map', function (req, res) { return __awaiter(void 0, void 0, void 0, 
         return [2 /*return*/];
     });
 }); });
-earthengine_1.default.data.authenticateViaPrivateKey(private_key_json_1.default, function () {
+earthengine_1.default.data.authenticateViaPrivateKey(privateKey, function () {
+    console.log('running');
     console.log('Authentication successful.');
     earthengine_1.default.initialize(null, null, function () {
         console.log('Earth Engine client library initialized.');

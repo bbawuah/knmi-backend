@@ -2,14 +2,27 @@ import dotenv from 'dotenv'
 dotenv.config()
 import ee from '@google/earthengine'
 import express from 'express'
-import privateKey from './private-key.json'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 const PORT = process.env.PORT || 3000
 
 const app = express()
 
-const origin = process.env.UI_SERVER_ORIGIN || 'http://localhost:8080'
+const origin =
+  process.env.UI_SERVER_ORIGIN || 'https://project-knmi.netlify.app'
+
+const privateKey = {
+  type: process.env.TYPE,
+  project_id: process.env.PROJECT_ID,
+  private_key_id: process.env.PRIVATE_KEY_ID,
+  private_key: process.env.PRIVATE_KEY?.replace(new RegExp('\\\\n', 'g'), '\n'),
+  client_email: process.env.CLIENT_EMAIL,
+  client_id: process.env.CLIENT_ID,
+  auth_uri: process.env.AUTH_URI,
+  oken_uri: process.env.TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_X509_CERT_URL,
+  client_x509_cert_url: process.env.CLIENT_X509_CERT_URL
+}
 
 app.use(cors({ origin, credentials: true }))
 app.use(express.json())
@@ -44,6 +57,7 @@ app.post('/mapId', async (req, res) => {
 ee.data.authenticateViaPrivateKey(
   privateKey,
   () => {
+    console.log('running')
     console.log('Authentication successful.')
     ee.initialize(
       null,
