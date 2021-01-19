@@ -95,7 +95,8 @@ app.post('/mapId', function (req, res) { return __awaiter(void 0, void 0, void 0
             collection.getMap({
                 min: 0,
                 max: 0.0002,
-                palette: ['black', 'blue', 'purple', 'cyan', 'green', 'yellow', 'red']
+                palette: ['black', 'blue', 'purple', 'cyan', 'green', 'yellow', 'red'],
+                opacity: 0.5
             }, function (response) {
                 console.log(response);
                 res.status(200).send({ mapId: response.mapid });

@@ -61,7 +61,8 @@ app.post('/mapId', async (req, res) => {
       {
         min: 0,
         max: 0.0002,
-        palette: ['black', 'blue', 'purple', 'cyan', 'green', 'yellow', 'red']
+        palette: ['black', 'blue', 'purple', 'cyan', 'green', 'yellow', 'red'],
+        opacity: 0.5
       },
       (response: any) => {
         console.log(response)
